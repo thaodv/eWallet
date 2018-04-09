@@ -4,11 +4,11 @@ import { NOTIFICATION_SYSTEM_STYLE } from 'utils/constants';
 
 import componentQueries from 'react-component-queries';
 
-import {
+/* import {
   // MdCardGiftcard,
   MdLoyalty,
   MdImportantDevices,
-} from 'react-icons/lib/md';
+} from 'react-icons/lib/md'; */
 import NotificationSystem from 'react-notification-system';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { Header, Sidebar, Content, Footer } from 'components/Layout';
 import GAListener from 'components/GAListener';
 
 // pages
+import LoginPage from 'pages/LoginPage';
 import DashboardPage from 'pages/DashboardPage';
 import WidgetPage from 'pages/WidgetPage';
 import ButtonPage from 'pages/ButtonPage';
@@ -53,7 +54,7 @@ class App extends React.Component {
   componentDidMount() {
     this.checkBreakpoint(this.props.breakpoint);
 
-    setTimeout(() => {
+    /* setTimeout(() => {
       this.notificationSystem.addNotification({
         title: <MdImportantDevices />,
         message: 'Welome to Reduction Admin!',
@@ -68,7 +69,7 @@ class App extends React.Component {
           'Reduction is carefully designed template powered by React and Bootstrap4!',
         level: 'info',
       });
-    }, 2500);
+    }, 2500); */
   }
 
   // close sidebar when
@@ -99,53 +100,62 @@ class App extends React.Component {
   }
 
   openSidebar(openOrClose) {
-    if (openOrClose === 'open') {
+    /* if (openOrClose === 'open') {
       return document
         .querySelector('.cr-sidebar')
         .classList.add('cr-sidebar--open');
     }
 
-    document.querySelector('.cr-sidebar').classList.remove('cr-sidebar--open');
+    document.querySelector('.cr-sidebar').classList.remove('cr-sidebar--open'); */
   }
 
   render() {
     return (
       <BrowserRouter>
-        <GAListener>
-          <main className="cr-app bg-light">
-            <Sidebar />
-            <Content fluid onClick={this.handleContentClick}>
-              <Header />
-              <Switch>
-                <Route exact path="/" component={DashboardPage} />
-                <Route path="/buttons" component={ButtonPage} />
-                <Route path="/cards" component={CardPage} />
-                <Route path="/widgets" component={WidgetPage} />
-                <Route path="/typography" component={TypographyPage} />
-                <Route path="/alerts" component={AlertPage} />
-                <Route path="/tables" component={TablePage} />
-                <Route path="/badges" component={BadgePage} />
-                <Route path="/button-groups" component={ButtonGroupPage} />
-                <Route path="/dropdowns" component={DropdownPage} />
-                <Route path="/progress" component={ProgressPage} />
-                <Route path="/modals" component={ModalPage} />
-                <Route path="/forms" component={FormPage} />
-                <Route path="/input-groups" component={InputGroupPage} />
-                <Route path="/charts" component={ChartPage} />
-                <Redirect to="/" />
-              </Switch>
-              <Footer />
-            </Content>
+        <Switch>
+          <Route exact path="/" render={(props) => <DashboardPage />} />
+          <Route exact path="/login" render={(props) => <LoginPage />} />
+          <Route path="/home" render={(props) => {
+            return(
+              <GAListener>
+                <main className="cr-app bg-light">
+                  <Sidebar />
+                  <Content fluid onClick={this.handleContentClick}>
+                    <Header />
+                    <Switch>
+                      <Route exact path="/home/" component={DashboardPage} />
+                      <Route path="/home/buttons" component={ButtonPage} />
+                      <Route path="/home/cards" component={CardPage} />
+                      <Route path="/home/widgets" component={WidgetPage} />
+                      <Route path="/home/typography" component={TypographyPage} />
+                      <Route path="/home/alerts" component={AlertPage} />
+                      <Route path="/home/tables" component={TablePage} />
+                      <Route path="/home/badges" component={BadgePage} />
+                      <Route path="/home/button-groups" component={ButtonGroupPage} />
+                      <Route path="/home/dropdowns" component={DropdownPage} />
+                      <Route path="/home/progress" component={ProgressPage} />
+                      <Route path="/home/modals" component={ModalPage} />
+                      <Route path="/home/forms" component={FormPage} />
+                      <Route path="/home/input-groups" component={InputGroupPage} />
+                      <Route path="/home/charts" component={ChartPage} />
+                      <Redirect to="/" />
+                    </Switch>
+                    <Footer />
+                  </Content>
 
-            <NotificationSystem
-              dismissible={false}
-              ref={notificationSystem =>
-                (this.notificationSystem = notificationSystem)
-              }
-              style={NOTIFICATION_SYSTEM_STYLE}
-            />
-          </main>
-        </GAListener>
+                  <NotificationSystem
+                    dismissible={false}
+                    ref={notificationSystem =>
+                      (this.notificationSystem = notificationSystem)
+                    }
+                    style={NOTIFICATION_SYSTEM_STYLE}
+                  />
+                </main>
+              </GAListener>
+            );
+          }} />
+        </Switch>
+        
       </BrowserRouter>
     );
   }
