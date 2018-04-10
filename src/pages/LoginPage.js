@@ -14,12 +14,7 @@ import {
 } from 'reactstrap';
 
 import Page from 'components/Page';
-
-import {    
-    MdImportantDevices
-  } from 'react-icons/lib/md';
-import { NOTIFICATION_SYSTEM_STYLE } from 'utils/constants';
-import NotificationSystem from 'react-notification-system';
+import { withRouter } from 'react-router-dom';
 
 class LoginPage extends Component {
     constructor(props) {
@@ -77,15 +72,14 @@ class LoginPage extends Component {
         e.preventDefault();
         let checkFields = this.fullFormValidation();
         if(!checkFields) {
-            console.log(this.state.form);
+            if(this.state.form.loginEmail === "krishna@gmail.com" && this.state.form.loginPassword === "krishna@123") {
+                console.log(this.state.form);
+                this.props.history.push("/home");
+            }
         } else {
-            this.notificationSystem.addNotification({
-                title: <MdImportantDevices />,
-                message: 'Please enter all fields',
-                level: 'info',
-            });
+            alert('Please fill all the fields');
         }   
-        alert(process.env.LOGIN_PASSWORD);
+        //alert(process.env.LOGIN_PASSWORD);
     }
     render() {
         return (
@@ -129,17 +123,10 @@ class LoginPage extends Component {
                             </CardBody>
                         </Card>
                     </Col>
-                </Row>
-                <NotificationSystem
-                    dismissible={false}
-                    ref={notificationSystem =>
-                      (this.notificationSystem = notificationSystem)
-                    }
-                    style={NOTIFICATION_SYSTEM_STYLE}
-                  />
+                </Row>                
             </Page>
         );
     }
 };
 
-export default LoginPage;
+export default withRouter(LoginPage);

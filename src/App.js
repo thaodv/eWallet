@@ -1,8 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { NOTIFICATION_SYSTEM_STYLE } from 'utils/constants';
 
 import componentQueries from 'react-component-queries';
+
+import { loginUser } from './sessions/actions/UserActions';
 
 /* import {
   // MdCardGiftcard,
@@ -53,7 +56,10 @@ class App extends React.Component {
 
   componentDidMount() {
     this.checkBreakpoint(this.props.breakpoint);
-
+    this.props.loginUser({
+      name: "krrish",
+      id: 1
+    });
     /* setTimeout(() => {
       this.notificationSystem.addNotification({
         title: <MdImportantDevices />,
@@ -113,7 +119,9 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" render={(props) => <DashboardPage />} />
+          <Route exact path="/" render={(props) => {
+            return(<Redirect to="/login" />);
+          }} />
           <Route exact path="/login" render={(props) => <LoginPage />} />
           <Route path="/home" render={(props) => {
             return(
@@ -154,6 +162,7 @@ class App extends React.Component {
               </GAListener>
             );
           }} />
+          <Redirect to="/" />
         </Switch>
         
       </BrowserRouter>
@@ -184,5 +193,14 @@ const query = ({ width }) => {
 
   return { breakpoint: 'xs' };
 };
-
-export default componentQueries(query)(App);
+const mapStateToProps = (store) => {
+  return({
+    user: store.user
+  })
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    loginUser : (data) => dispatch(loginUser(data))
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(componentQueries(query)(App));
