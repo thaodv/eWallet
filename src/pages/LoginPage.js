@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import jwt from 'jsonwebtoken';
+
+import { connect } from 'react-redux';
+import { loginUser } from '../sessions/actions/UserActions';
 
 import {
   Row,
@@ -74,7 +78,22 @@ class LoginPage extends Component {
         if(!checkFields) {
             if(this.state.form.loginEmail === "krishna@gmail.com" && this.state.form.loginPassword === "krishna@123") {
                 console.log(this.state.form);
-                this.props.history.push("/home");
+                this.props.loginUser({
+                    name: "krishna",
+                    email: this.state.form.loginEmail,
+                    id: 1
+                })
+                jwt.sign({
+                    name: "krishna",
+                    email: this.state.form.loginEmail,
+                    id: 1
+                }, "ewallet", { }, function(err, token) {
+                    console.log(token);
+                    localStorage.setItem("userToken",token);
+                    this.props.history.push("/home");
+                }.bind(this));
+            } else {
+                alert("Please enter correct details");
             }
         } else {
             alert('Please fill all the fields');
@@ -128,5 +147,14 @@ class LoginPage extends Component {
         );
     }
 };
-
-export default withRouter(LoginPage);
+const mapStateToProps = (store) => {
+    return({
+        user: store.user
+    });
+}
+const mapDispatchToProps = dispatch => {
+    return {
+      loginUser : (data) => dispatch(loginUser(data))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginPage));

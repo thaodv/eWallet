@@ -5,13 +5,12 @@ import { NOTIFICATION_SYSTEM_STYLE } from 'utils/constants';
 
 import componentQueries from 'react-component-queries';
 
-import { loginUser } from './sessions/actions/UserActions';
-
 /* import {
   // MdCardGiftcard,
   MdLoyalty,
   MdImportantDevices,
 } from 'react-icons/lib/md'; */
+
 import NotificationSystem from 'react-notification-system';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
@@ -55,11 +54,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.checkBreakpoint(this.props.breakpoint);
-    this.props.loginUser({
-      name: "krrish",
-      id: 1
-    });
+    this.checkBreakpoint(this.props.breakpoint);    
     /* setTimeout(() => {
       this.notificationSystem.addNotification({
         title: <MdImportantDevices />,
@@ -122,7 +117,7 @@ class App extends React.Component {
           <Route exact path="/" render={(props) => {
             return(<Redirect to="/login" />);
           }} />
-          <Route exact path="/login" render={(props) => <LoginPage />} />
+          <Route exact path="/login" render={(props) => <LoginPage {...props} />} />
           <Route path="/home" render={(props) => {
             return(
               <GAListener>
@@ -198,9 +193,4 @@ const mapStateToProps = (store) => {
     user: store.user
   })
 };
-const mapDispatchToProps = dispatch => {
-  return {
-    loginUser : (data) => dispatch(loginUser(data))
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(componentQueries(query)(App));
+export default connect(mapStateToProps)(componentQueries(query)(App));
