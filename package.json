@@ -8,6 +8,7 @@
     "chart.js": "^2.7.2",
     "classnames": "^2.2.5",
     "d3-geo": "^1.9.1",
+    "express": "^4.16.3",
     "faker": "^4.1.0",
     "jsonwebtoken": "^8.2.1",
     "nodemailer": "^4.6.4",
@@ -33,7 +34,9 @@
     "victory": "^0.24.0"
   },
   "devDependencies": {
+    "concurrently": "^3.5.1",
     "node-sass-chokidar": "^1.1.0",
+    "nodemon": "^1.17.3",
     "npm-run-all": "^4.1.2",
     "react-scripts": "1.1.1",
     "redux-logger": "^3.0.6",
@@ -48,10 +51,11 @@
     "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p watch-css start-js",
+    "start": "concurrently \"nodemon server.js\" \"npm-run-all -p watch-css start-js\"",
     "build": "npm run build-css && react-scripts build",
     "serve": "serve -s build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
