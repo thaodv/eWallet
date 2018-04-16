@@ -1,8 +1,9 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import jwt from 'jsonwebtoken';
 import { NOTIFICATION_SYSTEM_STYLE } from 'utils/constants';
-
+import { loginUser, logoutUser } from './sessions/actions/UserActions';
 import componentQueries from 'react-component-queries';
 
 /* import {
@@ -14,6 +15,8 @@ import componentQueries from 'react-component-queries';
 import NotificationSystem from 'react-notification-system';
 
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+
+import { setCookie, getCookie, checkCookie } from './functions';
 
 // layouts
 import { Header, Sidebar, Content, Footer } from 'components/Layout';
@@ -41,6 +44,12 @@ import ChartPage from 'pages/ChartPage';
 import './styles/reduction.css';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.setCookie = setCookie.bind(this);
+    this.getCookie = getCookie.bind(this);
+    this.checkCookie = checkCookie.bind(this);    
+  }
   static isSidebarOpen() {
     return document
       .querySelector('.cr-sidebar')
@@ -114,9 +123,34 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" render={(props) => {
+          <Route path="/" exact render={(props) => {
+              console.log(props,1);
+              if(!props.user) {
+                if(this.checkCookie('userToken')) {
+                  console.log(3);
+                  jwt.verify(this.getCookie('userToken'), 'ewallet', function(err, data) {
+                    if(!err) {
+                      this.props.loginUser({
+                        name: "krishna",
+                        email: data.email,
+                        id: 1
+                      })
+                      return(<Redirect to="/home" />);
+                    } else {
+                      console.log(err);
+                    }                            
+                  }.bind(this)); 
+                } else {
+                  console.log(4);
+                  this.props.logoutUser({});
+                  return(<Redirect to="/login" />);
+                }
+              }
+              return null;
+          }}></Route>
+          {/* <Route exact path="/" render={(props) => {
             return(<Redirect to="/login" />);
-          }} />
+          }} /> */}
           <Route exact path="/login" render={(props) => <LoginPage {...props} />} />
           <Route path="/home" render={(props) => {
             return(
@@ -158,8 +192,7 @@ class App extends React.Component {
             );
           }} />
           <Redirect to="/" />
-        </Switch>
-        
+        </Switch>        
       </BrowserRouter>
     );
   }
@@ -193,4 +226,10 @@ const mapStateToProps = (store) => {
     user: store.user
   })
 };
-export default connect(mapStateToProps)(componentQueries(query)(App));
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    loginUser,
+    logoutUser
+  },dispatch)  
+}
+export default connect(mapStateToProps, mapDispatchToProps)(componentQueries(query)(App));

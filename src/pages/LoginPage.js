@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import jwt from 'jsonwebtoken';
 import { withRouter } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { loginUser } from '../sessions/actions/UserActions';
-
+import { setCookie } from '../functions';
 import {
   Row,
   Col,
@@ -31,6 +32,8 @@ class LoginPage extends Component {
         }
         this.inputChange = inputChange.bind(this);
         this.fullFormValidation = fullFormValidation.bind(this);
+        this.setCookie = setCookie.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
     
     onSubmit(e) {
@@ -38,31 +41,30 @@ class LoginPage extends Component {
         let checkFields = this.fullFormValidation();
         if(!checkFields) {
             axios.post('/api/login', this.state.form)
-                .then(function (response) {
-                    console.log(response);
+                .then((res) => {
+                    if(res.status === 200) {
+                        console.log(res.data);
+                        this.setCookie('userToken',res.data.token,2);                        
+                        jwt.verify(res.data.token, 'ewallet', function(err, data) {
+                            if(!err) {
+                                //console.log(data);
+                                this.props.loginUser({
+                                    name: "krishna",
+                                    email: data.email,
+                                    id: 1
+                                })                                
+                            } else {
+                                console.log(err);
+                            }                            
+                        }.bind(this));                        
+                    } else {
+                        console.log(res.message);
+                    }
+                    
                 })
-                .catch(function (error) {
+                .catch((error) => {
                     console.log(error);
-                });
-                /* if(this.state.form.loginEmail === "krishna@gmail.com" && this.state.form.loginPassword === "krishna@123") {
-                    console.log(this.state.form);
-                    this.props.loginUser({
-                        name: "krishna",
-                        email: this.state.form.loginEmail,
-                        id: 1
-                    })
-                    jwt.sign({
-                        name: "krishna",
-                        email: this.state.form.loginEmail,
-                        id: 1
-                    }, "ewallet", { }, function(err, token) {
-                        console.log(token);
-                        localStorage.setItem("userToken",token);
-                        this.props.history.push("/home");
-                    }.bind(this));
-                } else {
-                    alert("Please enter correct details");
-                } */
+                });            
         } else {
             alert('Please fill all the fields');
         }   
@@ -121,8 +123,8 @@ const mapStateToProps = (store) => {
     });
 }
 const mapDispatchToProps = dispatch => {
-    return {
-      loginUser : (data) => dispatch(loginUser(data))
-    }
+    return bindActionCreators({
+        loginUser
+      },dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginPage));
