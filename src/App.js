@@ -43,12 +43,14 @@ import ChartPage from 'pages/ChartPage';
 
 import './styles/reduction.css';
 
-class App extends React.Component {
+class App extends React.Component {  
   constructor(props) {
-    super(props);
+    super(props);    
     this.setCookie = setCookie.bind(this);
     this.getCookie = getCookie.bind(this);
-    this.checkCookie = checkCookie.bind(this);    
+    this.checkCookie = checkCookie.bind(this);
+    this.checkLoginUser = this.checkLoginUser.bind(this);
+    this.getUserData = this.getUserData.bind(this);
   }
   static isSidebarOpen() {
     return document
@@ -56,14 +58,15 @@ class App extends React.Component {
       .classList.contains('cr-sidebar--open');
   }
 
-  componentWillReceiveProps({ breakpoint }) {
+  componentWillReceiveProps({ breakpoint, user }) {
     if (breakpoint !== this.props.breakpoint) {
       this.checkBreakpoint(breakpoint);
     }
   }
-
+  
   componentDidMount() {
-    this.checkBreakpoint(this.props.breakpoint);    
+    this.checkBreakpoint(this.props.breakpoint);
+    this.checkLoginUser(this.props.user);    
     /* setTimeout(() => {
       this.notificationSystem.addNotification({
         title: <MdImportantDevices />,
@@ -108,89 +111,102 @@ class App extends React.Component {
         return this.openSidebar('open');
     }
   }
+  getUserData() {
+    jwt.verify(this.getCookie('userToken'), 'ewallet', function(err, data) {
+      if(!err) {
+        this.props.loginUser({
+          name: "krishna",
+          email: data.email,
+          id: 1
+        })                                
+      } else {
+        console.log(err);
+      }                            
+    }.bind(this));
+  }
+  checkLoginUser(user) {
+    if(!user.length) {
+      if(this.checkCookie('userToken')) {
+        this.getUserData();
+      } else {
+        if(window.location.pathname !== "/login") {
+          window.location = "/login";
+        }
+        //this.props.history.push('/login');
+      }
+    }
+  }
 
   openSidebar(openOrClose) {
-    /* if (openOrClose === 'open') {
-      return document
-        .querySelector('.cr-sidebar')
-        .classList.add('cr-sidebar--open');
-    }
-
-    document.querySelector('.cr-sidebar').classList.remove('cr-sidebar--open'); */
+    let check = document.getElementsByClassName('cr-sidebar');
+    //console.log(check);
+    if(typeof(check) !== 'undefined' && check != null && check.length) {
+      if (openOrClose === 'open') {
+        return document
+          .querySelector('.cr-sidebar')
+          .classList.add('cr-sidebar--open');
+      }
+      document.querySelector('.cr-sidebar').classList.remove('cr-sidebar--open');
+    }    
   }
 
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" exact render={(props) => {
-              console.log(props,1);
-              if(!props.user) {
-                if(this.checkCookie('userToken')) {
-                  console.log(3);
-                  jwt.verify(this.getCookie('userToken'), 'ewallet', function(err, data) {
-                    if(!err) {
-                      this.props.loginUser({
-                        name: "krishna",
-                        email: data.email,
-                        id: 1
-                      })
-                      return(<Redirect to="/home" />);
-                    } else {
-                      console.log(err);
-                    }                            
-                  }.bind(this)); 
-                } else {
-                  console.log(4);
-                  this.props.logoutUser({});
-                  return(<Redirect to="/login" />);
-                }
-              }
-              return null;
-          }}></Route>
-          {/* <Route exact path="/" render={(props) => {
-            return(<Redirect to="/login" />);
-          }} /> */}
+      <BrowserRouter>        
+        <Switch>          
+          <Route exact path="/" render={(props) => {
+            if((this.props.user && this.props.user.length) || (this.checkCookie('userToken'))) {
+              return(<Redirect to="/home" />);
+            } else {
+              return(<Redirect to="/login" />);
+            }
+          }} />
           <Route exact path="/login" render={(props) => <LoginPage {...props} />} />
           <Route path="/home" render={(props) => {
-            return(
-              <GAListener>
-                <main className="cr-app bg-light">
-                  <Sidebar />
-                  <Content fluid onClick={this.handleContentClick}>
-                    <Header />
-                    <Switch>
-                      <Route exact path="/home/" component={DashboardPage} />
-                      <Route path="/home/buttons" component={ButtonPage} />
-                      <Route path="/home/cards" component={CardPage} />
-                      <Route path="/home/widgets" component={WidgetPage} />
-                      <Route path="/home/typography" component={TypographyPage} />
-                      <Route path="/home/alerts" component={AlertPage} />
-                      <Route path="/home/tables" component={TablePage} />
-                      <Route path="/home/badges" component={BadgePage} />
-                      <Route path="/home/button-groups" component={ButtonGroupPage} />
-                      <Route path="/home/dropdowns" component={DropdownPage} />
-                      <Route path="/home/progress" component={ProgressPage} />
-                      <Route path="/home/modals" component={ModalPage} />
-                      <Route path="/home/forms" component={FormPage} />
-                      <Route path="/home/input-groups" component={InputGroupPage} />
-                      <Route path="/home/charts" component={ChartPage} />
-                      <Redirect to="/" />
-                    </Switch>
-                    <Footer />
-                  </Content>
-
-                  <NotificationSystem
-                    dismissible={false}
-                    ref={notificationSystem =>
-                      (this.notificationSystem = notificationSystem)
-                    }
-                    style={NOTIFICATION_SYSTEM_STYLE}
-                  />
-                </main>
-              </GAListener>
-            );
-          }} />
+            if(!(this.props.user && this.props.user.length) && !(this.checkCookie('userToken'))) {
+              return(<Redirect to="/login" />);
+            } else {
+              //this.getUserData();
+              return(
+                <GAListener>
+                  <main className="cr-app bg-light">
+                    <Sidebar />
+                    <Content fluid onClick={this.handleContentClick}>
+                      <Header />
+                      <Switch>
+                        <Route exact path="/home/" component={DashboardPage} />
+                        <Route path="/home/buttons" component={ButtonPage} />
+                        <Route path="/home/cards" component={CardPage} />
+                        <Route path="/home/widgets" component={WidgetPage} />
+                        <Route path="/home/typography" component={TypographyPage} />
+                        <Route path="/home/alerts" component={AlertPage} />
+                        <Route path="/home/tables" component={TablePage} />
+                        <Route path="/home/badges" component={BadgePage} />
+                        <Route path="/home/button-groups" component={ButtonGroupPage} />
+                        <Route path="/home/dropdowns" component={DropdownPage} />
+                        <Route path="/home/progress" component={ProgressPage} />
+                        <Route path="/home/modals" component={ModalPage} />
+                        <Route path="/home/forms" component={FormPage} />
+                        <Route path="/home/input-groups" component={InputGroupPage} />
+                        <Route path="/home/charts" component={ChartPage} />
+                        <Redirect to="/" />
+                      </Switch>
+                      <Footer />
+                    </Content>
+          
+                    <NotificationSystem
+                      dismissible={false}
+                      ref={notificationSystem =>
+                        (this.notificationSystem = notificationSystem)
+                      }
+                      style={NOTIFICATION_SYSTEM_STYLE}
+                    />
+                  </main>
+                </GAListener>
+              )
+            }
+            
+          }}/>
           <Redirect to="/" />
         </Switch>        
       </BrowserRouter>

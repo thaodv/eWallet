@@ -47,10 +47,18 @@ export function fullFormValidation(e) {
 }
 
 export function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    return new Promise((resolve,reject) => {
+        try {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+ d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            resolve(1);
+        } catch(err) {
+            reject(err);
+        }        
+    });
+    
 }
 
 export function getCookie(cname) {
@@ -71,4 +79,15 @@ export function getCookie(cname) {
 
 export function checkCookie(cname) {
     return getCookie(cname);
+}
+
+export function deleteCookie(cname) {
+    return new Promise((resolve,reject) => {
+        try {
+            document.cookie = cname +'=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path=/';
+            resolve(1);
+        } catch(err) {
+            reject(err);
+        } 
+    }); 
 }

@@ -43,20 +43,26 @@ class LoginPage extends Component {
             axios.post('/api/login', this.state.form)
                 .then((res) => {
                     if(res.status === 200) {
-                        console.log(res.data);
-                        this.setCookie('userToken',res.data.token,2);                        
-                        jwt.verify(res.data.token, 'ewallet', function(err, data) {
-                            if(!err) {
-                                //console.log(data);
-                                this.props.loginUser({
-                                    name: "krishna",
-                                    email: data.email,
-                                    id: 1
-                                })                                
-                            } else {
-                                console.log(err);
-                            }                            
-                        }.bind(this));                        
+                        this.setCookie('userToken',res.data.token,2)
+                        .then((result) => {
+                            if(result === 1) {
+                                jwt.verify(res.data.token, 'ewallet', function(err, data) {
+                                    if(!err) {
+                                      this.props.loginUser({
+                                        name: "krishna",
+                                        email: data.email,
+                                        id: 1
+                                      })  
+                                      this.props.history.push('/home');                              
+                                    } else {
+                                      console.log(err);
+                                    }                            
+                                }.bind(this));
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });                      
                     } else {
                         console.log(res.message);
                     }
@@ -122,9 +128,9 @@ const mapStateToProps = (store) => {
         user: store.user
     });
 }
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch,props) => {
     return bindActionCreators({
         loginUser
-      },dispatch)
+    },dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginPage));

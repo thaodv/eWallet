@@ -10,4 +10,4 @@ const middleware = compose( applyMiddleware(thunk, logger), window.devToolsExten
 
 export const store = createStore(reducers,middleware);
 
-console.log(store.getState());
+//console.log(store.getState());

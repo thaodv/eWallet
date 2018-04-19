@@ -13,7 +13,7 @@ var http = require("http");
 var nodemailer = require("nodemailer");
 // This will store emails needed to send.
 // We can fetch it from DB (MySQL,Mongo) and store here.
-var listofemails = ["sudhirammina20@gmail.com","umadevi6667@gmail.com","mutha.goutham@yahoo.com"]; 
+//var listofemails = ["sudhirammina20@gmail.com","umadevi6667@gmail.com","mutha.goutham@yahoo.com"]; 
 // Will store email sent successfully.
 var success_email = [];
 // Will store email whose sending is failed. 
@@ -23,7 +23,7 @@ var transporter;
 
 /* Loading modules done. */
 
-function massMailer() {
+function massMailer(listofemails) {
     var self = this;
     transporter = nodemailer.createTransport({
         service: "Godaddy",
@@ -34,12 +34,12 @@ function massMailer() {
     });
     // Fetch all the emails from database and push it in listofemails
         // Will do it later.
-    self.invokeOperation();
+    self.invokeOperation(listofemails);
 };
 
 /* Invoking email sending operation at once */
 
-massMailer.prototype.invokeOperation = function() {
+massMailer.prototype.invokeOperation = function(listofemails) {
     var self = this;
     async.each(listofemails,self.SendEmail,function(){
         console.log(success_email);
@@ -92,4 +92,4 @@ massMailer.prototype.SendEmail = function(Email,callback) {
     });
 }
 
-new massMailer(); //lets begin
+new massMailer(["sudhirammina20@gmail.com","umadevi6667@gmail.com","mutha.goutham@yahoo.com"]); //lets begin

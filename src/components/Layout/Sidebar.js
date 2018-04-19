@@ -43,37 +43,37 @@ const sidebarBackground = {
 };
 
 const navComponents = [
-  { to: '/buttons', name: 'buttons', exact: false, Icon: MdRadioButtonChecked },
+  { to: '/home/buttons', name: 'buttons', exact: false, Icon: MdRadioButtonChecked },
   {
-    to: '/button-groups',
+    to: '/home/button-groups',
     name: 'button groups',
     exact: false,
     Icon: MdGroupWork,
   },
-  { to: '/forms', name: 'forms', exact: false, Icon: MdChromeReaderMode },
-  { to: '/input-groups', name: 'input groups', exact: false, Icon: MdViewList },
+  { to: '/home/forms', name: 'forms', exact: false, Icon: MdChromeReaderMode },
+  { to: '/home/input-groups', name: 'input groups', exact: false, Icon: MdViewList },
   {
-    to: '/dropdowns',
+    to: '/home/dropdowns',
     name: 'dropdowns',
     exact: false,
     Icon: MdArrowDropDownCircle,
   },
-  { to: '/badges', name: 'badges', exact: false, Icon: MdStar },
-  { to: '/alerts', name: 'alerts', exact: false, Icon: MdNotificationsActive },
-  { to: '/progress', name: 'progress', exact: false, Icon: MdBrush },
-  { to: '/modals', name: 'modals', exact: false, Icon: MdViewDay },
+  { to: '/home/badges', name: 'badges', exact: false, Icon: MdStar },
+  { to: '/home/alerts', name: 'alerts', exact: false, Icon: MdNotificationsActive },
+  { to: '/home/progress', name: 'progress', exact: false, Icon: MdBrush },
+  { to: '/home/modals', name: 'modals', exact: false, Icon: MdViewDay },
 ];
 
 const navContents = [
-  { to: '/typography', name: 'typography', exact: false, Icon: MdTextFields },
-  { to: '/tables', name: 'tables', exact: false, Icon: MdBorderAll },
+  { to: '/home/typography', name: 'typography', exact: false, Icon: MdTextFields },
+  { to: '/home/tables', name: 'tables', exact: false, Icon: MdBorderAll },
 ];
 
 const navItems = [
-  { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
-  { to: '/cards', name: 'cards', exact: false, Icon: MdWeb },
-  { to: '/charts', name: 'charts', exact: false, Icon: MdInsertChart },
-  { to: '/widgets', name: 'widgets', exact: false, Icon: MdWidgets },
+  { to: '/home/', name: 'dashboard', exact: true, Icon: MdDashboard },
+  { to: '/home/cards', name: 'cards', exact: false, Icon: MdWeb },
+  { to: '/home/charts', name: 'charts', exact: false, Icon: MdInsertChart },
+  { to: '/home/widgets', name: 'widgets', exact: false, Icon: MdWidgets },
 ];
 
 const bem = bn.create('sidebar');

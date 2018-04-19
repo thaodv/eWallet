@@ -7,6 +7,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../sessions/actions/UserActions';
+import { deleteCookie } from '../../functions';
 import {
   Navbar,
   // NavbarToggler,
@@ -58,11 +59,16 @@ const MdNotificationsActiveWithBadge = withBadge({
 })(MdNotificationsActive);
 
 class Header extends React.Component {
-  state = {
-    isOpenNotificationPopover: false,
-    isNotificationConfirmed: false,
-    isOpenUserCardPopover: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpenNotificationPopover: false,
+      isNotificationConfirmed: false,
+      isOpenUserCardPopover: false,
+    };
+    this.deleteCookie = deleteCookie.bind(this);
+  }
+  
 
   toggleNotificationPopover = () => {
     this.setState({
@@ -86,6 +92,18 @@ class Header extends React.Component {
 
     document.querySelector('.cr-sidebar').classList.toggle('cr-sidebar--open');
   };
+
+  logoutUser(e) {
+    this.deleteCookie('userToken')
+    .then((result) => {
+      if(result === 1) {
+        this.props.logoutUser(e);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
 
   render() {
     const { isNotificationConfirmed } = this.state;
@@ -168,7 +186,7 @@ class Header extends React.Component {
                             <ListGroupItem tag="button" action className="border-light">
                               <MdHelp /> Help
                             </ListGroupItem>
-                            <ListGroupItem tag="button" onClick={(e) => this.props.logoutUser(e)} action className="border-light">
+                            <ListGroupItem tag="button" onClick={(e) => this.logoutUser(e)} action className="border-light">
                               <MdExitToApp /> Signout
                             </ListGroupItem>
                           </ListGroup>
