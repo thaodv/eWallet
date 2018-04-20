@@ -1,5 +1,5 @@
 import React from 'react';
-
+import axios from 'axios';
 import { getColor } from 'utils/colors';
 
 import {
@@ -64,6 +64,13 @@ class DashboardPage extends React.Component {
   componentDidMount() {
     // this is needed, because InfiniteCalendar forces window scroll
     window.scrollTo(0, 0);
+    axios.post('/api/sendemail', { emails : ['umadevi6667@gmail.com','santosh.vijayan076@gmail.com']})
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   render() {

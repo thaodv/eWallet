@@ -26,10 +26,10 @@ var transporter;
 function massMailer(listofemails) {
     var self = this;
     transporter = nodemailer.createTransport({
-        service: "Godaddy",
+        service: "Gmail",
         auth: {
-            user: "info@mahed.org",
-            pass: "Maverickai@1"
+            user: "jotunloyalty@gmail.com",
+            pass: "loyalty@jotun"
         }
     });
     // Fetch all the emails from database and push it in listofemails
@@ -66,9 +66,9 @@ massMailer.prototype.SendEmail = function(Email,callback) {
     async.waterfall([
         function(callback) {                
             var mailOptions = {
-                from: 'info@mahed.org',     
+                from: 'jotunloyalty@gmail.com',     
                 to: Email,
-                subject: 'Hi ! This is from Async Script', 
+                subject: 'Test node mail', 
                 text: "Hello World !"
             };
             transporter.sendMail(mailOptions, function(error, info) {               
@@ -92,4 +92,4 @@ massMailer.prototype.SendEmail = function(Email,callback) {
     });
 }
 
-new massMailer(["sudhirammina20@gmail.com","umadevi6667@gmail.com","mutha.goutham@yahoo.com"]); //lets begin
+new massMailer(["krishna123@yopmail.com","umadevi6667@gmail.com","ziri@emailsy.info"]); //lets begin
